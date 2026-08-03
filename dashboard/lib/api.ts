@@ -4,6 +4,7 @@ import {
   DashboardStats,
   ChartResponse,
   LogsResponse,
+  LogEntry,
   SystemMetrics,
   Settings,
   AuthResponse,
@@ -11,6 +12,7 @@ import {
   UpdateProxyRequest,
   BulkProxyRequest,
   BulkDeleteRequest,
+  BulkTagRequest,
   ProxyTestResult,
   ProxySource,
   CreateSourceRequest,
@@ -19,7 +21,6 @@ import {
   PoolProxy,
   GeoSummaryItem,
   GeoCityItem,
-  PoolHealthCheckResult,
   HCJob,
   CreatePoolRequest,
   ProxyUser,
@@ -213,6 +214,16 @@ class ApiClient {
     message: string
   }> {
     return this.request("/api/v1/proxies/bulk-delete", {
+      method: "POST",
+      body: JSON.stringify(request),
+    })
+  }
+
+  async bulkTagProxies(request: BulkTagRequest): Promise<{
+    updated: number
+    message: string
+  }> {
+    return this.request("/api/v1/proxies/bulk-tags", {
       method: "POST",
       body: JSON.stringify(request),
     })
@@ -582,7 +593,7 @@ class ApiClient {
   }
 
   createLogsWebSocket(
-    onMessage: (log: any) => void,
+    onMessage: (log: LogEntry) => void,
     levels?: string[],
     source?: string
   ): WebSocket {
